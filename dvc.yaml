@@ -1,0 +1,56 @@
+stages:
+  data_ingestion:
+    cmd: set PYTHONPATH=. && python src/brain_tumor_classification/pipeline/data_ingestion_pipeline.py
+    deps:
+      - src/brain_tumor_classification/pipeline/data_ingestion_pipeline.py
+      - config/config.yaml
+    outs:
+      - artifacts/data_ingestion/data
+
+  prepare_base_model:
+    cmd: set PYTHONPATH=. && python src/brain_tumor_classification/pipeline/prep_base_model_pipeline.py
+    deps:
+      - src/brain_tumor_classification/pipeline/prep_base_model_pipeline.py
+      - config/config.yaml
+    params:
+      - base_model.model_name
+      - base_model.image_size
+      - base_model.num_classes
+      - base_model.learning_rate
+      - base_model.weight_decay
+      - base_model.freeze_base
+    outs:
+      - artifacts/prepare_base_model
+
+  training:
+    cmd: set PYTHONPATH=. && python src/brain_tumor_classification/pipeline/model_training_pipeline.py
+    deps:
+      - src/brain_tumor_classification/pipeline/model_training_pipeline.py
+      - config/config.yaml
+      - artifacts/data_ingestion/data
+      - artifacts/prepare_base_model
+    outs:
+      - artifacts/training/model.pth
+    params:
+      - training.epochs
+      - training.batch_size
+      - training.val_split
+      - training.learning_rate
+      - training.weight_decay
+      - training.optimizer
+      - training.scheduler
+      - training.step_size
+      - training.gamma
+  
+  evaluation:
+    cmd: set PYTHONPATH=. && python src/brain_tumor_classification/pipeline/model_eval_pipeline.py
+    deps:
+      - src/brain_tumor_classification/pipeline/model_eval_pipeline.py
+      - config/config.yaml
+      - artifacts/training
+      - artifacts/data_ingestion/data
+      - artifacts/prepare_base_model
+      - artifacts/training/model.pth
+    outs:
+      - artifacts/evaluation/report.json
+

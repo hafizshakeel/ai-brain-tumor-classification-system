@@ -1,0 +1,122 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: set PYTHONPATH=. && python 
+      src/brain_tumor_classification/pipeline/data_ingestion_pipeline.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 7a144ac6f46f0ca302307edc913d7c8e
+      size: 1185
+    - path: src/brain_tumor_classification/pipeline/data_ingestion_pipeline.py
+      hash: md5
+      md5: 27a7dbba255aa3c5d23951f2bf2edc28
+      size: 986
+    outs:
+    - path: artifacts/data_ingestion/data
+      hash: md5
+      md5: 440a20f27877ad996e95c9e6d1d13da5.dir
+      size: 93079343
+      nfiles: 3264
+  prepare_base_model:
+    cmd: set PYTHONPATH=. && python 
+      src/brain_tumor_classification/pipeline/prep_base_model_pipeline.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 7a144ac6f46f0ca302307edc913d7c8e
+      size: 1185
+    - path: src/brain_tumor_classification/pipeline/prep_base_model_pipeline.py
+      hash: md5
+      md5: 0b7276739e048d2a0e8378e97f50fdd8
+      size: 1013
+    params:
+      params.yaml:
+        base_model.freeze_base: true
+        base_model.image_size:
+        - 224
+        - 224
+        base_model.learning_rate: 0.001
+        base_model.model_name: swin_tiny_patch4_window7_224
+        base_model.num_classes: 4
+        base_model.weight_decay: 0.001
+    outs:
+    - path: artifacts/prepare_base_model
+      hash: md5
+      md5: 1d0044d3ba45b6bae13178bdc6693942.dir
+      size: 222636394
+      nfiles: 2
+  training:
+    cmd: set PYTHONPATH=. && python 
+      src/brain_tumor_classification/pipeline/model_training_pipeline.py
+    deps:
+    - path: artifacts/data_ingestion/data
+      hash: md5
+      md5: 440a20f27877ad996e95c9e6d1d13da5.dir
+      size: 93079343
+      nfiles: 3264
+    - path: artifacts/prepare_base_model
+      hash: md5
+      md5: 1d0044d3ba45b6bae13178bdc6693942.dir
+      size: 222636394
+      nfiles: 2
+    - path: config/config.yaml
+      hash: md5
+      md5: 7a144ac6f46f0ca302307edc913d7c8e
+      size: 1185
+    - path: src/brain_tumor_classification/pipeline/model_training_pipeline.py
+      hash: md5
+      md5: 8c349d7b33151e21215e7fba3b9128ca
+      size: 1289
+    params:
+      params.yaml:
+        training.batch_size: 32
+        training.epochs: 1
+        training.gamma: 0.1
+        training.learning_rate: 0.001
+        training.optimizer: adamw
+        training.scheduler: cosine
+        training.step_size: 7
+        training.val_split: 0.2
+        training.weight_decay: 0.005
+    outs:
+    - path: artifacts/training/model.pth
+      hash: md5
+      md5: a85f9b525fba578654b7c6ca4fc85475
+      size: 111309179
+  evaluation:
+    cmd: set PYTHONPATH=. && python 
+      src/brain_tumor_classification/pipeline/model_eval_pipeline.py
+    deps:
+    - path: artifacts/data_ingestion/data
+      hash: md5
+      md5: 440a20f27877ad996e95c9e6d1d13da5.dir
+      size: 93079343
+      nfiles: 3264
+    - path: artifacts/prepare_base_model
+      hash: md5
+      md5: 1d0044d3ba45b6bae13178bdc6693942.dir
+      size: 222636394
+      nfiles: 2
+    - path: artifacts/training
+      hash: md5
+      md5: 97e826fad073c92e3f8cb96df8a43d93.dir
+      size: 222629902
+      nfiles: 2
+    - path: artifacts/training/model.pth
+      hash: md5
+      md5: a85f9b525fba578654b7c6ca4fc85475
+      size: 111309179
+    - path: config/config.yaml
+      hash: md5
+      md5: 7a144ac6f46f0ca302307edc913d7c8e
+      size: 1185
+    - path: src/brain_tumor_classification/pipeline/model_eval_pipeline.py
+      hash: md5
+      md5: a0c1a58af75528699627659655ff8e93
+      size: 972
+    outs:
+    - path: artifacts/evaluation/report.json
+      hash: md5
+      md5: 62af256da192434d342e55cd60017f15
+      size: 1103
