@@ -50,8 +50,8 @@ data/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/hafizshakeel/brain_tumor_classification.git
-   cd brain_tumor_classification
+   git clone https://github.com/hafizshakeel/ai-brain-tumor-classification-system.git
+   cd ai-brain-tumor-classification-system
    ```
 
 2. Create a virtual environment and install dependencies:
