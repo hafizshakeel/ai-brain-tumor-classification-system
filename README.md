@@ -14,15 +14,6 @@ A production-ready deep learning system for brain tumor classification from MRI 
 
 This project implements an end-to-end machine learning system for classifying brain tumors from MRI scans using deep learning. The system uses a Swin Transformer architecture and can classify images into four categories.
 
-### Key Features
-
-- **End-to-end ML Pipeline** - From data ingestion to model deployment
-- **Modern Deep Learning** - Swin Transformer architecture with transfer learning
-- **MLOps Integration** - DVC for pipeline orchestration and MLflow for experiment tracking
-- **Professional UI** - Medical-style Streamlit interface for easy interaction
-- **Containerization** - Docker support for consistent deployment
-- **Cloud Deployment** - AWS ECR/EC2 deployment with CI/CD via GitHub Actions
-- **Reproducible Workflow** - Configuration-driven design with parameter tracking
 
 ## Interface Previews
 
