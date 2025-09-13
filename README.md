@@ -10,10 +10,6 @@
 
 A production-ready deep learning system for brain tumor classification from MRI images, built with a complete MLOps pipeline including model training, evaluation, experiment tracking, and deployment.
 
-## 📋 Project Overview
-
-This project implements an end-to-end machine learning system for classifying brain tumors from MRI scans using deep learning. The system uses a Swin Transformer architecture and can classify images into four categories.
-
 
 ## Interface Previews
 
